@@ -158,7 +158,7 @@ ORDER BY average_salary DESC;
 
 #this query built on the one from exercise 7 starting by removing the limit 1 and the WHERE statement from #7 so that it included "All salary information". Adding the ROUND() to t the AVG(s.salary) returns the rounded results that the exercise was asking for. 
 
-#11
+#BONUS#11
 SELECT CONCAT(e.first_name, ' ' , e.last_name) AS "Employee Name", d.dept_name AS 'Department Name', CONCAT(e.first_name, ' ' , e.last_name) AS "Manager Name"
 FROM employees AS e
 JOIN dept_emp AS de
@@ -170,7 +170,7 @@ ORDER BY d.dept_name, e.emp_no;
 
 #### still needs work for the "manager name" column. this returns a table with the correct number of rows and the correct first entry based on the exercise example but I dont know how to add the managers name to the last column, it currently just repeats the employees name. 
 
-#12
+#BONUS#12
 SELECT e.first_name, e.last_name, s.salary, d.dept_name
 FROM employees AS e
 JOIN dept_emp AS de
