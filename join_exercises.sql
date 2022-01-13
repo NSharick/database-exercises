@@ -159,7 +159,7 @@ ORDER BY average_salary DESC;
 #this query built on the one from exercise 7 starting by removing the limit 1 and the WHERE statement from #7 so that it included "All salary information". Adding the ROUND() to t the AVG(s.salary) returns the rounded results that the exercise was asking for. 
 
 #BONUS#11
-SELECT CONCAT(e.first_name, ' ' , e.last_name) AS "Employee Name", d.dept_name AS 'Department Name', CONCAT(e.first_name, ' ' , e.last_name) AS "Manager Name"
+SELECT CONCAT(e.first_name, ' ' , e.last_name) AS "Employee Name", d.dept_name AS 'Department Name', CONCAT(mgr.first_name, ' ' , mgr.last_name) AS "Manager Name"
 FROM employees AS e
 JOIN dept_emp AS de
 ON e.emp_no = de.emp_no
@@ -167,13 +167,15 @@ JOIN departments AS d
 ON d.dept_no = de.dept_no
 JOIN dept_manager AS dm
 ON dm.dept_no = de.dept_no
-#need to add employee table as manager table......
-WHERE de.to_date = '9999-01-01'
-ORDER BY d.dept_name, e.emp_no;
+JOIN employees AS mgr
+ON mgr.emp_no = dm.emp_no
+WHERE de.to_date > NOW() AND dm.to_date > NOW()
+ORDER BY d.dept_name;
 
-#### still needs work for the "manager name" column. this returns a table with the correct number of rows and the correct first entry based on the exercise example but I dont know how to add the managers name to the last column, it currently just repeats the employees name. 
+#the key to making this one work was joining the employee table a second time with a different alias so that a different set of employee names could be pulled for the third row of the returned column. 
 
 #BONUS#12
+## this first set returns the name, salary and department for all the current employees
 SELECT e.first_name, e.last_name, s.salary, d.dept_name
 FROM employees AS e
 JOIN dept_emp AS de
@@ -182,7 +184,48 @@ JOIN salaries AS s
 ON s.emp_no = de.emp_no
 JOIN departments AS d 
 ON d.dept_no = de.dept_no
-WHERE s.to_date = '9999-01-01' 
-ORDER BY d.dept_name, s.salary DESC;
+WHERE s.to_date = '9999-01-01' AND s.to_date > NOW();
 
-#### still needs work, this will return firstname, lastname, salary, and deptname, sorted by dept name then salary decending but still need to work on pulling only the top from each departments
+#this set returns the max salary for each department
+SELECT MAX(salary)
+FROM salaries AS s
+JOIN dept_emp AS de
+USING (emp_no)
+WHERE s.to_date > NOW() AND de.to_date > NOW()
+GROUP BY de.dept_no;
+
+#put the previous two together to only return the rows from the first query that have salaries matching ones in the second query. not quite correct because it returns two rows from the sales dept. 
+SELECT e.first_name, e.last_name, s.salary, d.dept_name
+FROM employees AS e
+JOIN dept_emp AS de
+ON de.emp_no = e.emp_no 
+JOIN salaries AS s 
+ON s.emp_no = de.emp_no
+JOIN departments AS d 
+ON d.dept_no = de.dept_no
+WHERE s.to_date = '9999-01-01' AND de.to_date > NOW() AND s.salary IN (SELECT MAX(salary)
+FROM salaries AS s
+JOIN dept_emp AS de
+USING (emp_no)
+WHERE s.to_date > NOW() AND de.to_date > NOW()
+GROUP BY de.dept_no);
+
+
+#the previous code produced two results from the sales department because a less than max salary matched the salary value of the max salary of the production department. adding the department name to the subquery and the WHERE statement removes the outlier/duplicate.
+SELECT e.first_name, e.last_name, s.salary, d.dept_name
+FROM employees AS e
+JOIN dept_emp AS de
+ON de.emp_no = e.emp_no 
+JOIN salaries AS s 
+ON s.emp_no = de.emp_no
+JOIN departments AS d 
+ON d.dept_no = de.dept_no
+WHERE s.to_date = '9999-01-01' AND de.to_date > NOW() AND (d.dept_name, s.salary) IN (SELECT d.dept_name, MAX(salary)
+FROM salaries AS s
+JOIN dept_emp AS de USING (emp_no)
+JOIN departments AS d USING (dept_no)
+WHERE s.to_date > NOW() AND de.to_date > NOW()
+GROUP BY de.dept_no);
+
+
+
