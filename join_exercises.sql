@@ -29,7 +29,7 @@ FROM users
 RIGHT JOIN roles ON users.role_id = roles.id
 GROUP BY roles.name;
 
-#this query results in a table showing the name of each of the roles from the roles table in the first column and the number of users with each role in the second column. 
+#this query results in a table showing the name of each of the roles from the roles table in the first column and the number of users with each role in the second column including roles with a count of 0. 
 
 
 #Employees Database#
@@ -165,6 +165,9 @@ JOIN dept_emp AS de
 ON e.emp_no = de.emp_no
 JOIN departments AS d
 ON d.dept_no = de.dept_no
+JOIN dept_manager AS dm
+ON dm.dept_no = de.dept_no
+#need to add employee table as manager table......
 WHERE de.to_date = '9999-01-01'
 ORDER BY d.dept_name, e.emp_no;
 
@@ -182,5 +185,4 @@ ON d.dept_no = de.dept_no
 WHERE s.to_date = '9999-01-01' 
 ORDER BY d.dept_name, s.salary DESC;
 
-#### still needs work, this will return firstname, lastname, salary, and deptname, sorted by dept name then salary decending but I dont know how to pull just the top from each department.
-
+#### still needs work, this will return firstname, lastname, salary, and deptname, sorted by dept name then salary decending but still need to work on pulling only the top from each departments
