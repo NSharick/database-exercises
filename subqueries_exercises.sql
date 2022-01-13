@@ -68,7 +68,6 @@ ON s.emp_no = e.emp_no
 WHERE to_date > NOW() AND salary > (SELECT AVG(salary) FROM salaries);
 
 #6
-##########
 #used what I felt confident with to find the number of total salaries and ordered to see max at top. (tot - 240124 max - 158220)
 SELECT salary 
 FROM salaries 
@@ -101,4 +100,15 @@ WHERE salary >= (SELECT MAX(salary) - STDDEV(salary) FROM salaries WHERE to_date
 FROM salaries
 WHERE to_date > NOW()) 
 * 100 AS percent_of_salaries;
+
+#BONUS #1
+
+
+
+#BONUS #2
+
+
+
+#BONUS #3
+
 
