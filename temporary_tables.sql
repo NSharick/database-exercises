@@ -96,31 +96,55 @@ END AS comp
 FROM avg_salary_comp
 ORDER BY avg_sal DESC;
 
-##Better way to do it###
 
 #
 #
+##Better way to do it - from class example###
 #
-#
-#
+#pull historic average and historic stddev
+select avg(salary) as avg_salary, std(salary) as std_salary
+from employees.salaries;
+#Need to write down numbers to enter manually later
+
+#create the temp table that has the department name and the current department average.
+create temporary table current_info as (
+    select dept_name, avg(salary) as department_current_average
+    from employees.salaries
+    join employees.dept_emp using(emp_no)
+    join employees.departments using(dept_no)
+    where employees.dept_emp.to_date > curdate()
+    and employees.salaries.to_date > curdate()
+    group by dept_name
+);
+#review the temp table that was made
+SELECT * FROM current_info;
 
 
+#add the new columns that will be used for comparison of salaries
+alter table current_info add average float(10,2);
+alter table current_info add standard_deviation float(10,2);
+alter table current_info add zscore float(10,2);
+#review to make sure the columns were created correctly
+SELECT * FROM current_info;
 
 
+#add the historical numbers from above to the first two new columns in the table
+update current_info set average = 63810;
+update current_info set standard_deviation = 16904;
+#review changes
+SELECT * FROM current_info;
 
 
+#use the two columns just filled with historical values to compute z-scores in the last column
+update current_info 
+set zscore = (department_current_average - average) / standard_deviation;
+#review changes
+SELECT * FROM current_info;
 
 
-
-
-
-
-
-
-
-
-
-
+#look at the final product ordered by z-score to make salary comparisons. 
+select * from current_info
+order by zscore desc;
 
 
 
