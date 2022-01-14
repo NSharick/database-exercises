@@ -60,9 +60,67 @@ SELECT * FROM sakila_temp;
 #add a column for the new amount structure
 ALTER TABLE sakila_temp ADD cents_amount INT UNSIGNED NOT NULL;
 
-#update new column with data values
+#update new column with data values -- this can also be done when creating the temp table. 
 UPDATE sakila_temp SET cents_amount = amount * 100; 
 
-#check what happened
+#verify column returns correctly formatted amount in cents.
 SELECT * FROM sakila_temp;
+
+
+#3
+#create a temp table that shows the current average salary by department
+CREATE TEMPORARY TABLE avg_salary_comp (
+SELECT AVG(employees.salaries.salary) AS avg_sal, employees.dept_emp.dept_no
+FROM employees.salaries
+JOIN employees.dept_emp USING(emp_no)
+WHERE employees.salaries.to_date > NOW() and employees.dept_emp.to_date > NOW()
+GROUP BY employees.dept_emp.dept_no);
+
+#review the temp table
+SELECT * FROM avg_salary_comp ORDER BY dept_no;
+
+#create a table to display the historical average pay
+CREATE TEMPORARY TABLE hist_avg_sal (
+SELECT AVG(employees.salaries.salary) 
+FROM employees.salaries);
+
+#review the temp table created
+SELECT * FROM hist_avg_sal;
+
+#compares department average salaries to historical average but I mannually entered the historical average number so there is probably a better way to do it.
+SELECT dept_no, avg_sal, 
+CASE
+WHEN avg_sal < 63810.7448 THEN 'less than historical average'
+WHEN avg_sal > 63810.7448 THEN 'more than historical average'
+END AS comp
+FROM avg_salary_comp
+ORDER BY avg_sal DESC;
+
+##Better way to do it###
+
+#
+#
+#
+#
+#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
