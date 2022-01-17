@@ -47,7 +47,74 @@ SELECT * FROM payment WHERE payment_date BETWEEN '2005-05-25 00:00:00' AND '2005
 SELECT film_id, title, description FROM film WHERE LENGTH(description) BETWEEN 100 AND 120;
 
 #6a
- 
+SELECT * FROM film WHERE description LIKE 'A Thoughtful%';
+
+#6b
+SELECT * FROM film WHERE description LIKE '%boat';
+
+#6c
+SELECT * FROM film WHERE description LIKE '%database%' AND length > 180;
+
+#7a
+SELECT * FROM payment LIMIT 20;
+
+#7b
+SELECT payment_date, amount FROM payment WHERE amount > 5 AND payment_id BETWEEN 1000 AND 2000;
+
+#7c
+SELECT * FROM customer WHERE customer_id BETWEEN 101 AND 200;
+
+#8a
+SELECT * FROM film ORDER BY length;
+
+#8b
+SELECT DISTINCT rating FROM film ORDER BY rating DESC;
+
+#8c
+SELECT  payment_date, amount FROM payment ORDER BY amount DESC LIMIT 20;
+
+#8d
+SELECT title, description, special_features, length, rental_duration FROM film WHERE special_features LIKE '%behind the scenes%' AND length < 120 AND rental_duration BETWEEN 5 AND 7 ORDER BY length DESC LIMIT 10;
+
+#9a
+SELECT c.first_name AS customer_first_name, c.last_name AS customer_last_name, a.first_name AS actor_first_name, a.last_name AS actor_last_name
+FROM customer AS c 
+LEFT JOIN actor AS a
+ON c.last_name = a.last_name;
+
+#9b
+SELECT c.first_name AS customer_first_name, c.last_name AS customer_last_name, a.first_name AS actor_first_name, a.last_name AS actor_last_name
+FROM customer AS c 
+RIGHT JOIN actor AS a
+ON c.last_name = a.last_name;
+
+#9c
+SELECT c.first_name AS customer_first_name, c.last_name AS customer_last_name, a.first_name AS actor_first_name, a.last_name AS actor_last_name
+FROM customer AS c 
+JOIN actor AS a
+ON c.last_name = a.last_name;
+
+#9d
+SELECT ci.city, co.country
+FROM city AS ci
+LEFT JOIN country AS co
+USING (country_id);
+
+#9e
+SELECT f.title, f.description, f.release_year, l.name AS 'Language'
+FROM film AS f
+LEFT JOIN language AS l
+USING (language_id); 
+
+#9f
+SELECT s.first_name, s.last_name, a.address, a.address2, c.city, a.district, a.postal_code
+FROM staff AS s
+LEFT JOIN address AS a
+USING (address_id)
+LEFT JOIN city AS c 
+USING (city_id);
+
+##more exercises##
 
 
 
@@ -55,18 +122,12 @@ SELECT film_id, title, description FROM film WHERE LENGTH(description) BETWEEN 1
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+#
+#
+#
+#
+#
+#
 USE employees;
 
 SELECT emp_no, dept_no
